@@ -8,8 +8,28 @@ void MojaGrubaRyba::setDie(std::shared_ptr<Die> die)
 	this->die = die;
 }
 
+void MojaGrubaRyba::initBoard()
+{
+	board.reset(new Board);
+	board->fields.push_back(std::shared_ptr<Field>(new StartField(50)));
+	board->fields.push_back(std::shared_ptr<Field>(new PropertyField("Anemonia", 160, 20)));
+	board->fields.push_back(std::shared_ptr<Field>(new IslandField));
+	board->fields.push_back(std::shared_ptr<Field>(new PropertyField("Aporina", 220, 20)));
+	board->fields.push_back(std::shared_ptr<Field>(new AquariumField(3)));
+	board->fields.push_back(std::shared_ptr<Field>(new PropertyField("Grota", 300, 40)));
+	board->fields.push_back(std::shared_ptr<Field>(new PropertyField("Menella", 280, 20)));
+	board->fields.push_back(std::shared_ptr<Field>(new DepositField("Laguna", 15)));
+	board->fields.push_back(std::shared_ptr<Field>(new PropertyField("Statek", 250, 40)));
+	board->fields.push_back(std::shared_ptr<Field>(new PrizeField("Blazenki", 120)));
+	board->fields.push_back(std::shared_ptr<Field>(new PropertyField("Pennatula", 400, 20)));
+	board->fields.push_back(std::shared_ptr<Field>(new FineField("Rekin", 180)));
+}
+
 void MojaGrubaRyba::play(unsigned int rounds)
 {
+	initBoard();
+	for(auto player : players)
+		player -> reset();
 	playersInGame = players.size();
 	for(int r = 1; r <= rounds && playersInGame > 1; r++)
 	{
@@ -62,21 +82,6 @@ void MojaGrubaRyba::play(unsigned int rounds)
 
 MojaGrubaRyba::MojaGrubaRyba()
 {
-	//TODO chyba trzeba przerobic na factory jakies 
-	//std::vector < std::shared_ptr < Field > > fields;
-	board.reset(new Board);
-	board->fields.push_back(std::shared_ptr<Field>(new StartField(50)));
-	board->fields.push_back(std::shared_ptr<Field>(new PropertyField("Anemonia", 160, 20)));
-	board->fields.push_back(std::shared_ptr<Field>(new IslandField));
-	board->fields.push_back(std::shared_ptr<Field>(new PropertyField("Aporina", 220, 20)));
-	board->fields.push_back(std::shared_ptr<Field>(new AquariumField(3)));
-	board->fields.push_back(std::shared_ptr<Field>(new PropertyField("Grota", 300, 40)));
-	board->fields.push_back(std::shared_ptr<Field>(new PropertyField("Menella", 280, 20)));
-	board->fields.push_back(std::shared_ptr<Field>(new DepositField("Laguna", 15)));
-	board->fields.push_back(std::shared_ptr<Field>(new PropertyField("Statek", 250, 40)));
-	board->fields.push_back(std::shared_ptr<Field>(new PrizeField("Blazenki", 120)));
-	board->fields.push_back(std::shared_ptr<Field>(new PropertyField("Pennatula", 400, 20)));
-	board->fields.push_back(std::shared_ptr<Field>(new FineField("Rekin", 180)));
 }
 
 void MojaGrubaRyba::addComputerPlayer(ComputerLevel level)
@@ -85,23 +90,31 @@ void MojaGrubaRyba::addComputerPlayer(ComputerLevel level)
 	switch(level)
 	{
 		case ComputerLevel::DUMB:
-			players.push_back(std::shared_ptr<Player>(new DumbComputerPlayer(name)));
+			players.push_back(std::shared_ptr<Player>(new DumbComputerPlayer(name, fishcoinsOnStart)));
 			break;
 		case ComputerLevel::SMARTASS:
-			players.push_back(std::shared_ptr<Player>(new SmartassComputerPlayer(name)));
+			players.push_back(std::shared_ptr<Player>(new SmartassComputerPlayer(name, fishcoinsOnStart)));
 			break;
 	}
 }
 
 void MojaGrubaRyba::addHumanPlayer(std::shared_ptr<Human> human)
 {
-	players.push_back(std::shared_ptr<Player>(new HumanPlayer(human)));
+	players.push_back(std::shared_ptr<Player>(new HumanPlayer(human, fishcoinsOnStart)));
 }
 
 /* Player */
 
-Player::Player(const std::string &&cname, int fishcoins) : name(std::move(cname)), fishcoins(fishcoins), pos(0), waitingTime(0), bankrupt(false)
+Player::Player(const std::string &&cname, int fishcoins) : name(std::move(cname)), fishcoins(fishcoins), fishcoinsOnStart(fishcoins), pos(0), waitingTime(0), bankrupt(false)
 {
+}
+
+void Player::reset()
+{
+	setFishcoins(fishcoinsOnStart);
+	setPos(0);
+	setWaitingTime(0);
+	bankrupt = false;
 }
 
 int Player::getPos()
@@ -158,6 +171,11 @@ int Player::getFishcoins()
 	return this->fishcoins;
 }
 
+void Player::setFishcoins(unsigned int fishcoins)
+{
+	this -> fishcoins = fishcoins;
+}
+
 void Player::setWaitingTime(unsigned int wt)
 {
 	this->waitingTime = wt;
@@ -172,7 +190,7 @@ std::string Player::getName()
 	return this->name;
 }
 
-DumbComputerPlayer::DumbComputerPlayer(const std::string cname) : Player(std::move(cname), 1000)
+DumbComputerPlayer::DumbComputerPlayer(const std::string cname, unsigned int fishcoins) : Player(std::move(cname), fishcoins)
 {
 }
 
@@ -193,7 +211,7 @@ bool DumbComputerPlayer::wantSell(std::string const& propertyName)
 	return false;
 }
 
-SmartassComputerPlayer::SmartassComputerPlayer(const std::string cname) : Player(std::move(cname), 1000)
+SmartassComputerPlayer::SmartassComputerPlayer(const std::string cname, unsigned int fishcoins) : Player(std::move(cname), fishcoins)
 {
 }
 
@@ -207,7 +225,7 @@ bool SmartassComputerPlayer::wantSell(std::string const& propertyName)
 	return false;
 }
 
-HumanPlayer::HumanPlayer(std::shared_ptr<Human> hInterface) : Player(std::move(hInterface->getName()), 1000), humanInterface(hInterface)
+HumanPlayer::HumanPlayer(std::shared_ptr<Human> hInterface, unsigned int fishcoins) : Player(std::move(hInterface->getName()), fishcoins), humanInterface(hInterface)
 {
 }
 

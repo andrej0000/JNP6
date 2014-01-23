@@ -31,12 +31,14 @@ public:
 private:
 	static const int minPlayers = 2;
 	static const int maxPlayers = 8;
+	static const int fishcoinsOnStart = 1000;
 
 	std::vector < std::shared_ptr < Player > > players;
 	std::shared_ptr < Die > die;
 	std::unique_ptr < Board > board;
 
 	unsigned playersInGame;
+	void initBoard();
 };
 
 class Player
@@ -44,6 +46,7 @@ class Player
 private:
 	int pos;
 	int fishcoins;
+	int fishcoinsOnStart;
 	unsigned int waitingTime;
 	std::vector< weak_ptr< PropertyField > > ownedProperties;
 	bool bankrupt;
@@ -53,6 +56,7 @@ public:
 	Player(const std::string&& name, int fishcoins);
 	int pay(int ammount);
 	void addFishcoins(int ammount);
+	void setFishcoins(unsigned int ammount);
 	int getFishcoins();
 	void setWaitingTime(unsigned int wt);
 	unsigned int getWaitingTime();
@@ -60,6 +64,7 @@ public:
 	void setPos(int newPos);
 	bool inGame();
 	std::string getName();
+	void reset();
 	virtual bool wantBuy(std::string const& propertyName) = 0;
 	virtual bool wantSell(std::string const& propertyName) = 0;
 };
@@ -75,7 +80,7 @@ class HumanPlayer : public Player
 {
 	std::shared_ptr < Human > humanInterface;
 public:
-	HumanPlayer(std::shared_ptr<Human> hInterface);
+	HumanPlayer(std::shared_ptr<Human> hInterface, unsigned int fc);
 	virtual bool wantBuy(std::string const& propertyName);
 	virtual bool wantSell(std::string const& propertyName);
 };
@@ -83,7 +88,7 @@ public:
 class DumbComputerPlayer : public Player
 {
 public:
-	DumbComputerPlayer(const std::string cname);
+	DumbComputerPlayer(const std::string cname, unsigned int fc);
 	virtual bool wantBuy(std::string const& propertyName);
 	virtual bool wantSell(std::string const& propertyName);
 };
@@ -91,7 +96,7 @@ public:
 class SmartassComputerPlayer : public Player
 {
 public:
-	SmartassComputerPlayer(const std::string cname);
+	SmartassComputerPlayer(const std::string cname, unsigned int fc);
 	virtual bool wantBuy(std::string const& propertyName);
 	virtual bool wantSell(std::string const& propertyName);
 };
