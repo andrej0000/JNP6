@@ -16,8 +16,14 @@ void MojaGrubaRyba::play(unsigned int rounds)
 		std::cout << "Runda: " << r << '\n';
 		for(auto player : players)
 		{
-			if(player->inGame() == false)
+		//	std::cout << player->getName();
+			if(player->inGame() == false){
+		//		std::cout << " *** bankrut *** \n";
 				continue;
+			}
+			if(player->getWaitingTime() > 0){
+				player->setWaitingTime(player->getWaitingTime()-1);
+			}
 			if(player->getWaitingTime() == 0)
 			{
 				int moves = 0;
@@ -31,9 +37,14 @@ void MojaGrubaRyba::play(unsigned int rounds)
 				int newPos = (player->getPos() + moves) % board->getSize();
 				player->setPos(newPos);
 				board->field(newPos)->action(player);
+		//		std::cout << " pole: " << board->field(player->getPos())->getName();
+		//		std::cout << " gotowka: " << player->getFishcoins() << '\n';
 			}
-			else
-				player->setWaitingTime(player->getWaitingTime()-1);
+			else {
+				//std::cout << " pole: " << board->field(player->getPos())->getName();
+				//std::cout << " *** czekanie: " << player->getWaitingTime() << " *** \n";
+				//player->setWaitingTime(player->getWaitingTime()-1);
+			}
 		}
 		// statystyki:
 		for(auto player : players)
@@ -63,7 +74,7 @@ MojaGrubaRyba::MojaGrubaRyba()
 	board->fields.push_back(std::shared_ptr<Field>(new IslandField));
 	board->fields.push_back(std::shared_ptr<Field>(new PropertyField("Aporina", 220, 20)));
 	board->fields.push_back(std::shared_ptr<Field>(new AquariumField(3)));
-	board->fields.push_back(std::shared_ptr<Field>(new PropertyField("Hotel w grocie", 300, 40)));
+	board->fields.push_back(std::shared_ptr<Field>(new PropertyField("Grota", 300, 40)));
 	board->fields.push_back(std::shared_ptr<Field>(new PropertyField("Menella", 280, 20)));
 	board->fields.push_back(std::shared_ptr<Field>(new DepositField("Laguna", 15)));
 	board->fields.push_back(std::shared_ptr<Field>(new PropertyField("Statek", 250, 40)));
