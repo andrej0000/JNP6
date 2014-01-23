@@ -16,9 +16,7 @@ void MojaGrubaRyba::play(unsigned int rounds)
 		std::cout << "Runda: " << r << '\n';
 		for(auto player : players)
 		{
-		//	std::cout << player->getName();
 			if(player->inGame() == false){
-		//		std::cout << " *** bankrut *** \n";
 				continue;
 			}
 			if(player->getWaitingTime() > 0){
@@ -37,13 +35,11 @@ void MojaGrubaRyba::play(unsigned int rounds)
 				int newPos = (player->getPos() + moves) % board->getSize();
 				player->setPos(newPos);
 				board->field(newPos)->action(player);
-		//		std::cout << " pole: " << board->field(player->getPos())->getName();
-		//		std::cout << " gotowka: " << player->getFishcoins() << '\n';
-			}
-			else {
-				//std::cout << " pole: " << board->field(player->getPos())->getName();
-				//std::cout << " *** czekanie: " << player->getWaitingTime() << " *** \n";
-				//player->setWaitingTime(player->getWaitingTime()-1);
+				if (player->inGame() == false){
+					playersInGame--;
+					if (playersInGame == 1)
+						break;
+				}
 			}
 		}
 		// statystyki:
