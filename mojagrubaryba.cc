@@ -16,12 +16,8 @@ void MojaGrubaRyba::play(unsigned int rounds)
 		std::cout << "Runda " << r << '\n';
 		for(auto player : players)
 		{
-			std::cout << player->getName();
 			if(player->inGame() == false)
-			{
-				std::cout << " *** bankrut ***\n";
 				continue;
-			}
 			if(player->getWaitingTime() == 0)
 			{
 				int moves = 0;
@@ -35,12 +31,23 @@ void MojaGrubaRyba::play(unsigned int rounds)
 				int newPos = (player->getPos() + moves) % board->getSize();
 				player->setPos(newPos);
 				board->field(newPos)->action(player);
-				std::cout << " pole: " << board->field(newPos)->getName() << " gotowka: " << player->getFishcoins() << '\n';
 			}
 			else
-			{
-				std::cout << " pole: " << board->field(player->getPos())->getName() << " *** czekanie: " << player->getWaitingTime() << " ***\n";
 				player->setWaitingTime(player->getWaitingTime()-1);
+		}
+		// statystyki:
+		for(auto player : players)
+		{
+			std::cout << player->getName();
+			if(player -> inGame() == false)
+				std::cout << " *** bankrut ***\n";
+			else
+			{
+				std::cout << " pole: " << board->field(player->getPos())->getName();
+				if(player->getWaitingTime() == 0)
+					std::cout << " gotowka: " << player->getFishcoins() << '\n';
+				else
+					std::cout << " *** czekanie: " << player->getWaitingTime() << '\n';
 			}
 		}
 	}
@@ -67,7 +74,7 @@ MojaGrubaRyba::MojaGrubaRyba()
 
 void MojaGrubaRyba::addComputerPlayer(ComputerLevel level)
 {
-	std::string name = "Gracz"+std::to_string(board->getSize()+1);
+	std::string name = "Gracz"+std::to_string(players.size()+1);
 	switch(level)
 	{
 		case ComputerLevel::DUMB:
@@ -86,7 +93,7 @@ void MojaGrubaRyba::addHumanPlayer(std::shared_ptr<Human> human)
 
 /* Player */
 
-Player::Player(const std::string &&cname) : name(std::move(cname))
+Player::Player(const std::string &&cname, int fishcoins) : name(std::move(cname)), fishcoins(fishcoins), pos(0), waitingTime(0), bankrupt(false)
 {
 }
 
@@ -158,7 +165,7 @@ std::string Player::getName()
 	return this->name;
 }
 
-DumbComputerPlayer::DumbComputerPlayer(const std::string cname) : Player(std::move(cname))
+DumbComputerPlayer::DumbComputerPlayer(const std::string cname) : Player(std::move(cname), 1000)
 {
 }
 
@@ -179,7 +186,7 @@ bool DumbComputerPlayer::wantSell(std::string const& propertyName)
 	return false;
 }
 
-SmartassComputerPlayer::SmartassComputerPlayer(const std::string cname) : Player(std::move(cname))
+SmartassComputerPlayer::SmartassComputerPlayer(const std::string cname) : Player(std::move(cname), 1000)
 {
 }
 
@@ -193,7 +200,7 @@ bool SmartassComputerPlayer::wantSell(std::string const& propertyName)
 	return false;
 }
 
-HumanPlayer::HumanPlayer(std::shared_ptr<Human> hInterface) : Player(std::move(hInterface->getName())), humanInterface(hInterface)
+HumanPlayer::HumanPlayer(std::shared_ptr<Human> hInterface) : Player(std::move(hInterface->getName()), 1000), humanInterface(hInterface)
 {
 }
 

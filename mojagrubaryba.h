@@ -50,7 +50,7 @@ private:
 	std::string name;
 	void bankrupcy();
 public:
-	Player(const std::string&& name);
+	Player(const std::string&& name, int fishcoins);
 	int pay(int ammount);
 	void addFishcoins(int ammount);
 	int getFishcoins();
