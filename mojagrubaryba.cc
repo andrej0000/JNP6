@@ -14,32 +14,18 @@ void MojaGrubaRyba::initBoard()
 	std::vector< std::shared_ptr< Field > > fields;
 
 	fields.push_back(std::shared_ptr<Field>(new StartField(50)));
-	fields.push_back(std::shared_ptr<Field>(new PropertyField("Anemonia", 160, 20)));
+	fields.push_back(std::shared_ptr<Field>(new CoralPropertyField("Anemonia", 160)));
 	fields.push_back(std::shared_ptr<Field>(new IslandField));
-	fields.push_back(std::shared_ptr<Field>(new PropertyField("Aporina", 220, 20)));
+	fields.push_back(std::shared_ptr<Field>(new CoralPropertyField("Aporina", 220)));
 	fields.push_back(std::shared_ptr<Field>(new AquariumField(3)));
-	fields.push_back(std::shared_ptr<Field>(new PropertyField("Grota", 300, 40)));
-	fields.push_back(std::shared_ptr<Field>(new PropertyField("Menella", 280, 20)));
+	fields.push_back(std::shared_ptr<Field>(new PublicPropertyField("Grota", 300)));
+	fields.push_back(std::shared_ptr<Field>(new CoralPropertyField("Menella", 280)));
 	fields.push_back(std::shared_ptr<Field>(new DepositField("Laguna", 15)));
-	fields.push_back(std::shared_ptr<Field>(new PropertyField("Statek", 250, 40)));
+	fields.push_back(std::shared_ptr<Field>(new PublicPropertyField("Statek", 250)));
 	fields.push_back(std::shared_ptr<Field>(new PrizeField("Blazenki", 120)));
-	fields.push_back(std::shared_ptr<Field>(new PropertyField("Pennatula", 400, 20)));
+	fields.push_back(std::shared_ptr<Field>(new CoralPropertyField("Pennatula", 400)));
 	fields.push_back(std::shared_ptr<Field>(new FineField("Rekin", 180)));
 	board.reset(new Board(std::move(fields)));
-
-//	board.reset(new Board);
-//	board->fields.push_back(std::shared_ptr<Field>(new StartField(50)));
-//	board->fields.push_back(std::shared_ptr<Field>(new PropertyField("Anemonia", 160, 20)));
-//	board->fields.push_back(std::shared_ptr<Field>(new IslandField));
-//	board->fields.push_back(std::shared_ptr<Field>(new PropertyField("Aporina", 220, 20)));
-//	board->fields.push_back(std::shared_ptr<Field>(new AquariumField(3)));
-//	board->fields.push_back(std::shared_ptr<Field>(new PropertyField("Grota", 300, 40)));
-//	board->fields.push_back(std::shared_ptr<Field>(new PropertyField("Menella", 280, 20)));
-//	board->fields.push_back(std::shared_ptr<Field>(new DepositField("Laguna", 15)));
-//	board->fields.push_back(std::shared_ptr<Field>(new PropertyField("Statek", 250, 40)));
-//	board->fields.push_back(std::shared_ptr<Field>(new PrizeField("Blazenki", 120)));
-//	board->fields.push_back(std::shared_ptr<Field>(new PropertyField("Pennatula", 400, 20)));
-//	board->fields.push_back(std::shared_ptr<Field>(new FineField("Rekin", 180)));
 }
 
 void MojaGrubaRyba::play(unsigned int rounds)
