@@ -1,8 +1,49 @@
 #include "mojagrubaryba.h"
+#include <iostream>
+
+/* MojaGrubaRyba */
 
 void MojaGrubaRyba::setDie(std::shared_ptr<Die> die)
 {
 	this->die.reset(die);
+}
+
+void MojaGrubaRyba::play(unsigned int rounds)
+{
+	playersInGame = players.size();
+	for(int r = 1; r <= rounds && playersInGame > 1; r++)
+	{
+		std::cout << "Runda " << r << '\n';
+		for(Player &player : players)
+		{
+			std::cout << player.getName();
+			if(player.inGame() == false)
+			{
+				std::cout << " *** bankrut ***\n";
+				continue;
+			}
+			if(player.getWaitingTime() == 0)
+			{
+				int moves = 0;
+				moves += die.roll();
+				moves += die.roll();
+				for(int m = 1; m < moves; m++)
+				{
+					int filedNum = (player.getPos() + m) % board.getSize();
+					board.field(fieldNum).pass(player);
+				}
+				int newPos = (player.getPos() + moves) % board.getSize();
+				player.setPos(newPos);
+				board.field(newPos).action(player);
+				std::cout << " pole: " << field(newPos).getName() << " gotowka: " << player.getFishcoins() << '\n';
+			}
+			else
+			{
+				std::cout << " pole: " << field(player.getPos()).getName << " *** czekanie: " << player.getWaitingTime() << " ***\n";
+				player.setWaitingTime(player.getWaitingTime()-1);
+			}
+		}
+	}
 }
 
 MojaGrubaRyba::MojaGrubaRyba()
@@ -22,6 +63,18 @@ MojaGrubaRyba::MojaGrubaRyba()
 	fields.push_back(new PropertyField("Pennatula", 400));
 	fields.push_back(new FineField("Rekin", 180));
 	board.fields = std::move(fields);
+}
+
+/* Player */
+
+int Player::getPos()
+{
+	return pos;
+}
+
+void Player::setPos(int newPos)
+{
+	pos = newPos;
 }
 
 void StartField::action(shared_ptr< Player > p)

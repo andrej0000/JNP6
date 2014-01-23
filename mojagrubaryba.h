@@ -26,6 +26,8 @@ private:
 	std::vector < Player > players;
 	std::unique_ptr < Die > die;
 	std::unique_ptr < Board > board;
+	
+	unsigned playersInGame;
 };
 
 class Player
@@ -35,10 +37,17 @@ private:
 	int fishcoins;
 	int waitingTime;
 	std::vector< PropertyField > ownedProperties;
+	bool bankrupt;
+	std::string name;
 public:
 	int pay(int ammount); //bankrutuje jesli nie ma kasy i cale konekwencje z tego wynikajace
 	void addFishcoins(int ammount);
 	void setWaitingTime(int wt);
+	int getWaitingTime();
+	int getPos();
+	void setPos(int newPos);
+	bool inGame(); // czy juz zbankrutowalismy czy jeszcze gramy
+	std::string getName();
 	virtual bool wantBuy(std::string const& propertyName) = 0;
 	virtual bool wantSell(std::string const& propertyName) = 0;
 };
@@ -66,6 +75,7 @@ class Board
 {
 	Board(std::vector < Field > &&_fields);
 	Board();
+	int getSize();
 private:
 	std::vector < std::unique_ptr < Field > > fields;
 };
