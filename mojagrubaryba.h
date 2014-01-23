@@ -82,41 +82,52 @@ private:
 //DONE
 class Field
 {
+public:
 	virtual void action(shared_ptr<Player> p) = 0;
 	virtual void pass(shared_ptr<Player> p) = 0;
+	const std::string getName();
 protected:
 	const std::string name;
 };
 
 class StartField : public Field
 {
-	//TODO
-	// konstruktor
+public:
+	StartField(int cash);
 	virtual void action(shared_ptr<Player> p) = 0;
 	virtual void pass(shared_ptr<Player> p) = 0;
 private:
-	int cash;	
+	int cash;
 };
-//TODO Konstruktor 
+
+class IslandField : public Field
+{
+public:
+	IslandField()
+	virtual void action(shared_ptr<Player> p);
+	virtual void pass(shared_ptr<Player> p);
+}
+
 class PrizeField : public Field
 {
+	PrizeField(std::string name, int ammount);
 	virtual void action(shared_ptr<Player> p) = 0;
-	virtual oid pass(shared_ptr<Player> p) = 0;
+	virtual void pass(shared_ptr<Player> p) = 0;
 private:
 	int ammount;
 };
-//TODO Konstruktor
 class FineField : public Field
 {
+	FineField(std::string name. int ammount);
 	virtual void action(shared_ptr<Player> p) = 0;
 	virtual void pass(shared_ptr<Player> p) = 0;
 private:
 	int ammount;
 };
 
-//TODO Konstruktor
 class DepositField : public Field
 {
+	DepositField(std::string name, int ammount);
 	virtual void action(shared_ptr<Player> p) = 0;
 	virtual void pass(shared_ptr<Player> p) = 0;
 private:
@@ -124,19 +135,19 @@ private:
 	int fishcoins;
 };
 
-//TODO Konstruktor
 class AquariumField : public Field
 {
+	AquariumField(int turns);
 	virtual void action(shared_ptr<Player> p) = 0;
 	virtual void pass(shared_ptr<Player> p) = 0;
 private:
 	const int turnsToWait;
 };
 
-//TODO konstruktor
 class PropertyField : public Field
 {
-public: 
+public:
+	PropertyField(std::string name, int price, int percent);
 	virtual void action(shared_ptr< Player > p) = 0;
 	virtual void pass(shared_ptr< Player > p) = 0;
 	void sold();
@@ -145,17 +156,17 @@ private:
 	std::weak_ptr < Player > owner;
 	const std::string name;
 	int price;
-protected:
+	int percent;
 	virtual int getPercent();
 };
 class PublicPropertyField : public PropertyField
 {
-protected:
-	int getPercent();
+public:
+	PublicPropertyField(std::string name, int price);
 };
 class CoralPropertyField : public PropertyField
 {
-protected:
-	int getPercent();
+public:
+	CoralPropertyField(std::string name, int price);
 };
 #endif

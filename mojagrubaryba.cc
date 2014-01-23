@@ -111,6 +111,16 @@ bool HumanPlayer::wantSell(std::string const& propertyName)
 
 /* Field */
 
+const std::string Field::getName()
+{
+	return this->name;
+}
+
+StartField::StartField(int cash) : cash(cash), name("Start")
+{
+
+}
+
 void StartField::action(shared_ptr< Player > p)
 {
 	p->addFishcoins(this->cash);
@@ -121,6 +131,10 @@ void StartField::pass(shared_ptr< Player > p)
 	p->addFishcoins(this->cash);
 }
 
+PrizeField::PrizeField(std::string name, int ammount) : name(name), ammount(ammount)
+{
+
+}
 
 void PrizeField::action(shared_ptr<Player> p)
 {
@@ -130,6 +144,12 @@ void PrizeField::action(shared_ptr<Player> p)
 void PrizeField::pass(shared_ptr<Player> p)
 {
 	//nothing
+}
+
+
+IslandField::IslandField() : name("Wyspa")
+{
+
 }
 
 
@@ -143,6 +163,12 @@ void IslandField::pass(shared_ptr<Player> p)
 	//nothing
 }
 
+
+PropertyField::PropertyField(std::string name, int price, int percent)
+	: name(name), price(price), percent(percent)
+{
+
+}
 
 void PropertyField::action(shared_ptr<Player> p)
 {
@@ -175,16 +201,22 @@ void PropertyField::sold(){
 	this->owner.reset();
 }
 
-int PublicPropertyField::getPercent()
+PublicPropertyField::PublicPropertyField(std::string name, int price)
+	: PropertyField(name, price, 40)
 {
-	return 40;
+
 }
 
-int CoralPropertyField::getPercent()
+CoralPropertyField::CoralPropertyField(std::string name, int price)
+	: PropertyField(name, price, 20)
 {
-	return 20;
+
 }
 
+DepositField::DepositField(std::string name, int ammount) : name(name), ammount(ammount)
+{
+	
+}
 void DepositField::action(shared_ptr<Player> p)
 {
 	p->addFishcoins(this->fishcoins);
@@ -196,6 +228,10 @@ void DepositField::pass(shared_ptr<Player> p)
 	this->fishcoins += p->pay(this->ammount);
 }
 
+FineField::FineField(std::string name. int ammount) : name(name), ammount(ammount)
+{
+
+}
 void FineField::action(shared_ptr<Player> p)
 {
 	this->fishcoins += p->pay(this->ammount);
@@ -206,6 +242,10 @@ void FineField::pass(shared_ptr<Player> p)
 
 }
 
+AquariumField::AquariumField(int turns) : turnsToWait(turns)
+{
+
+}
 void AquariumField::action(shared_ptr<Player> p)
 {
 	p->setWaitingTime(this->turnsToWait);
