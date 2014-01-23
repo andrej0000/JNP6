@@ -1,22 +1,26 @@
 #include "fields.h"
+#include <iostream>
 /* Field */
+
+Field::Field(const std::string &&cname) : name(std::move(cname))
+{
+}
 
 const std::string Field::getName()
 {
 	return this->name;
 }
 
-StartField::StartField(int cash) : cash(cash), name("Start")
+StartField::StartField(int cash) : cash(cash), Field("Start")
 {
-
 }
 
-void StartField::action(shared_ptr< Player > p)
+void StartField::action(std::shared_ptr< Player > p)
 {
 	p->addFishcoins(this->cash);
 }
 
-void StartField::pass(shared_ptr< Player > p)
+void StartField::pass(std::shared_ptr< Player > p)
 {
 	p->addFishcoins(this->cash);
 }
@@ -26,12 +30,12 @@ PrizeField::PrizeField(std::string name, int ammount) : name(name), ammount(ammo
 
 }
 
-void PrizeField::action(shared_ptr<Player> p)
+void PrizeField::action(std::shared_ptr<Player> p)
 {
 	p->addFishcoins(this->ammount);
 }
 
-void PrizeField::pass(shared_ptr<Player> p)
+void PrizeField::pass(std::shared_ptr<Player> p)
 {
 	//nothing
 }
@@ -43,12 +47,12 @@ IslandField::IslandField() : name("Wyspa")
 }
 
 
-void IslandField::action(shared_ptr<Player> p)
+void IslandField::action(std::shared_ptr<Player> p)
 {
 	//nothing
 }
 
-void IslandField::pass(shared_ptr<Player> p)
+void IslandField::pass(std::shared_ptr<Player> p)
 {
 	//nothing
 }
@@ -60,7 +64,7 @@ PropertyField::PropertyField(std::string name, int price, int percent)
 
 }
 
-void PropertyField::action(shared_ptr<Player> p)
+void PropertyField::action(std::shared_ptr<Player> p)
 {
 	if (this->owner.expired()){//noninitialized
 		if(p->wantBuy(this->name)){
@@ -78,7 +82,7 @@ void PropertyField::action(shared_ptr<Player> p)
 	}
 }
 
-void PropertyField::pass(shared_ptr<Player> p)
+void PropertyField::pass(std::shared_ptr<Player> p)
 {
 
 }
@@ -107,13 +111,13 @@ DepositField::DepositField(std::string name, int ammount) : name(name), ammount(
 {
 	
 }
-void DepositField::action(shared_ptr<Player> p)
+void DepositField::action(std::shared_ptr<Player> p)
 {
 	p->addFishcoins(this->fishcoins);
 	this->fishcoins = 0;
 }
 
-void DepositField::pass(shared_ptr<Player> p)
+void DepositField::pass(std::shared_ptr<Player> p)
 {
 	this->fishcoins += p->pay(this->ammount);
 }
@@ -122,12 +126,12 @@ FineField::FineField(std::string name. int ammount) : name(name), ammount(ammoun
 {
 
 }
-void FineField::action(shared_ptr<Player> p)
+void FineField::action(std::shared_ptr<Player> p)
 {
 	this->fishcoins += p->pay(this->ammount);
 }
 
-void FineField::pass(shared_ptr<Player> p)
+void FineField::pass(std::shared_ptr<Player> p)
 {
 
 }
@@ -136,12 +140,12 @@ AquariumField::AquariumField(int turns) : turnsToWait(turns)
 {
 
 }
-void AquariumField::action(shared_ptr<Player> p)
+void AquariumField::action(std::shared_ptr<Player> p)
 {
 	p->setWaitingTime(this->turnsToWait);
 }
 
-void AquariumField::pass(shared_ptr<Player> p)
+void AquariumField::pass(std::shared_ptr<Player> p)
 {
 
 }

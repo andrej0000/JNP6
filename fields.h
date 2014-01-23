@@ -2,6 +2,7 @@
 #define _FIELDS_H
 
 #include <string>
+#include <memory>
 using std::shared_ptr;
 
 class Player;
@@ -11,6 +12,7 @@ class Board;
 class Field
 {
 public:
+	Field(const std::string &&name);
 	virtual void action(shared_ptr<Player> p) = 0;
 	virtual void pass(shared_ptr<Player> p) = 0;
 	const std::string getName();
@@ -22,8 +24,8 @@ class StartField : public Field
 {
 public:
 	StartField(int cash);
-	virtual void action(shared_ptr<Player> p) = 0;
-	virtual void pass(shared_ptr<Player> p) = 0;
+	virtual void action(shared_ptr<Player> p);
+	virtual void pass(shared_ptr<Player> p);
 private:
 	int cash;
 };
@@ -31,33 +33,37 @@ private:
 class IslandField : public Field
 {
 public:
-	IslandField()
+	IslandField();
 	virtual void action(shared_ptr<Player> p);
 	virtual void pass(shared_ptr<Player> p);
-}
+};
 
 class PrizeField : public Field
 {
+public:
 	PrizeField(std::string name, int ammount);
-	virtual void action(shared_ptr<Player> p) = 0;
-	virtual void pass(shared_ptr<Player> p) = 0;
+	virtual void action(shared_ptr<Player> p);
+	virtual void pass(shared_ptr<Player> p);
 private:
 	int ammount;
 };
+
 class FineField : public Field
 {
-	FineField(std::string name. int ammount);
-	virtual void action(shared_ptr<Player> p) = 0;
-	virtual void pass(shared_ptr<Player> p) = 0;
+public:
+	FineField(std::string name, int ammount);
+	virtual void action(shared_ptr<Player> p);
+	virtual void pass(shared_ptr<Player> p);
 private:
 	int ammount;
 };
 
 class DepositField : public Field
 {
+public:
 	DepositField(std::string name, int ammount);
-	virtual void action(shared_ptr<Player> p) = 0;
-	virtual void pass(shared_ptr<Player> p) = 0;
+	virtual void action(shared_ptr<Player> p);
+	virtual void pass(shared_ptr<Player> p);
 private:
 	const int ammount;
 	int fishcoins;
@@ -65,9 +71,10 @@ private:
 
 class AquariumField : public Field
 {
+public:
 	AquariumField(int turns);
-	virtual void action(shared_ptr<Player> p) = 0;
-	virtual void pass(shared_ptr<Player> p) = 0;
+	virtual void action(shared_ptr<Player> p);
+	virtual void pass(shared_ptr<Player> p);
 private:
 	const int turnsToWait;
 };
@@ -76,8 +83,8 @@ class PropertyField : public Field
 {
 public:
 	PropertyField(std::string name, int price, int percent);
-	virtual void action(shared_ptr< Player > p) = 0;
-	virtual void pass(shared_ptr< Player > p) = 0;
+	virtual void action(shared_ptr< Player > p);
+	virtual void pass(shared_ptr< Player > p);
 	void sold();
 	int getPrice();
 private:
