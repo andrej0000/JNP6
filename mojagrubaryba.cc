@@ -99,6 +99,18 @@ bool SmartassComputerPlayer::wantBuy(std::string const& propertyName)
 	return true;
 }
 
+bool HumanPlayer::wantBuy(std::string const& propertyName)
+{
+	return humanInterface.wantBuy(propertyName);
+}
+
+bool HumanPlayer::wantSell(std::string const& propertyName)
+{
+	return humanInterface.wantSell(propertyName);
+}
+
+/* Field */
+
 void StartField::action(shared_ptr< Player > p)
 {
 	p->addFishcoins(this->cash);
