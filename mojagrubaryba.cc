@@ -49,20 +49,20 @@ void MojaGrubaRyba::play(unsigned int rounds)
 MojaGrubaRyba::MojaGrubaRyba()
 {
 	//TODO chyba trzeba przerobic na factory jakies 
-	std::vector < std::shared_ptr < Field > > fields;
-	fields.push_back(std::shared_ptr<Field>(new StartField(50)));
-	fields.push_back(std::shared_ptr<Field>(new PropertyField("Anemonia", 160, 20)));
-	fields.push_back(std::shared_ptr<Field>(new IslandField));
-	fields.push_back(std::shared_ptr<Field>(new PropertyField("Aporina", 220, 20)));
-	fields.push_back(std::shared_ptr<Field>(new AquariumField(3)));
-	fields.push_back(std::shared_ptr<Field>(new PropertyField("Hotel w grocie", 300, 40)));
-	fields.push_back(std::shared_ptr<Field>(new PropertyField("Menella", 280, 20)));
-	fields.push_back(std::shared_ptr<Field>(new DepositField("Laguna", 15)));
-	fields.push_back(std::shared_ptr<Field>(new PropertyField("Statek", 250, 40)));
-	fields.push_back(std::shared_ptr<Field>(new PrizeField("Blazenki", 120)));
-	fields.push_back(std::shared_ptr<Field>(new PropertyField("Pennatula", 400, 20)));
-	fields.push_back(std::shared_ptr<Field>(new FineField("Rekin", 180)));
-	board->fields = std::move(fields);
+	//std::vector < std::shared_ptr < Field > > fields;
+	board.reset(new Board);
+	board->fields.push_back(std::shared_ptr<Field>(new StartField(50)));
+	board->fields.push_back(std::shared_ptr<Field>(new PropertyField("Anemonia", 160, 20)));
+	board->fields.push_back(std::shared_ptr<Field>(new IslandField));
+	board->fields.push_back(std::shared_ptr<Field>(new PropertyField("Aporina", 220, 20)));
+	board->fields.push_back(std::shared_ptr<Field>(new AquariumField(3)));
+	board->fields.push_back(std::shared_ptr<Field>(new PropertyField("Hotel w grocie", 300, 40)));
+	board->fields.push_back(std::shared_ptr<Field>(new PropertyField("Menella", 280, 20)));
+	board->fields.push_back(std::shared_ptr<Field>(new DepositField("Laguna", 15)));
+	board->fields.push_back(std::shared_ptr<Field>(new PropertyField("Statek", 250, 40)));
+	board->fields.push_back(std::shared_ptr<Field>(new PrizeField("Blazenki", 120)));
+	board->fields.push_back(std::shared_ptr<Field>(new PropertyField("Pennatula", 400, 20)));
+	board->fields.push_back(std::shared_ptr<Field>(new FineField("Rekin", 180)));
 }
 
 void MojaGrubaRyba::addComputerPlayer(ComputerLevel level)
@@ -208,6 +208,14 @@ bool HumanPlayer::wantSell(std::string const& propertyName)
 }
 
 /* Board */
+
+Board::Board()
+{
+}
+
+Board::Board(std::vector < std::shared_ptr < Field > > &&_fields) : fields(std::move(_fields))
+{
+}
 
 int Board::getSize()
 {

@@ -99,7 +99,7 @@ public:
 class Board
 {
 public:
-	Board(std::vector < Field > &&_fields);
+	Board(std::vector < std::shared_ptr <Field > > &&_fields);
 	Board();
 	int getSize();
 	std::shared_ptr < Field >  field(int pos);
