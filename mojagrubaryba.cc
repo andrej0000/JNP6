@@ -77,6 +77,28 @@ void Player::setPos(int newPos)
 	pos = newPos;
 }
 
+bool DumbComputerPlayer::wantBuy(std::string const& propertyName)
+{
+	static int it = 1;
+	if(it == 3)
+	{
+		it = 1;
+		return true;
+	}
+	it++;
+	return false;
+}
+
+bool DumbComputerPlayer::wantSell()
+{
+	return false;
+}
+
+bool SmartassComputerPlayer::wantBuy(std::string const& propertyName)
+{
+	return true;
+}
+
 void StartField::action(shared_ptr< Player > p)
 {
 	p->addFishcoins(this->cash);
