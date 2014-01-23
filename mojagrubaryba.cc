@@ -13,7 +13,7 @@ void MojaGrubaRyba::play(unsigned int rounds)
 	playersInGame = players.size();
 	for(int r = 1; r <= rounds && playersInGame > 1; r++)
 	{
-		std::cout << "Runda " << r << '\n';
+		std::cout << "Runda: " << r << '\n';
 		for(auto player : players)
 		{
 			if(player->inGame() == false)
@@ -40,14 +40,14 @@ void MojaGrubaRyba::play(unsigned int rounds)
 		{
 			std::cout << player->getName();
 			if(player -> inGame() == false)
-				std::cout << " *** bankrut ***\n";
+				std::cout << " *** bankrut *** \n";
 			else
 			{
 				std::cout << " pole: " << board->field(player->getPos())->getName();
 				if(player->getWaitingTime() == 0)
 					std::cout << " gotowka: " << player->getFishcoins() << '\n';
 				else
-					std::cout << " *** czekanie: " << player->getWaitingTime() << '\n';
+					std::cout << " *** czekanie: " << player->getWaitingTime() << " *** \n";
 			}
 		}
 	}
@@ -307,7 +307,8 @@ void PropertyField::action(std::shared_ptr<Player> p)
 {
 	if (this->owner.expired()){//noninitialized
 		if(p->wantBuy(this->name)){
-			this->owner = p;
+			if (p->pay(this->price) == this->price)
+				this->owner = p;
 		}
 	} else if (auto owner = this->owner.lock()){
 		if (owner != p) {
