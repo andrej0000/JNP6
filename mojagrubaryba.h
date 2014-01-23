@@ -36,19 +36,20 @@ class Player
 private:
 	int pos;
 	int fishcoins;
-	int waitingTime;
-	std::vector< PropertyField > ownedProperties;
+	unsigned int waitingTime;
+	std::vector< weak_ptr< PropertyField > > ownedProperties;
 	bool bankrupt;
 	std::string name;
+	void bankrupcy();
 public:
-	int pay(int ammount); //bankrutuje jesli nie ma kasy i cale konekwencje z tego wynikajace//TODO
-	void addFishcoins(int ammount);//TODO
-	void setWaitingTime(int wt);//TODO
-	int getWaitingTime();//TODO
+	int pay(int ammount);
+	void addFishcoins(int ammount);
+	void setWaitingTime(unsigned int wt);
+	int getWaitingTime();
 	int getPos();
 	void setPos(int newPos);
-	bool inGame(); // czy juz zbankrutowalismy czy jeszcze gramy//TODO
-	std::string getName();//TODO
+	bool inGame();
+	std::string getName();
 	virtual bool wantBuy(std::string const& propertyName) = 0;
 	virtual bool wantSell(std::string const& propertyName) = 0;
 };

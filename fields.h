@@ -8,7 +8,6 @@ class Player;
 class Board;
 
 
-//DONE
 class Field
 {
 public:
