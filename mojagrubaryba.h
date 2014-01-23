@@ -25,7 +25,7 @@ public:
 	void addComputerPlayer(ComputerLevel level);
 	void addHumanPlayer(std::shared_ptr<Human> human);
 
-	
+
 	void bankrupcy(shared_ptr< Player > p); //plejer zglasza bankructwo
 	MojaGrubaRyba();
 private:
