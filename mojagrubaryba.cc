@@ -136,14 +136,20 @@ int Player::pay(int ammount)
 		fishcoins -= ammount;
 		return ammount;
 	}
+	std::vector< weak_ptr< PropertyField >> newProperties;
 	for (auto wprop : this->ownedProperties){
 		if (auto prop = wprop.lock()){
 			if (wantSell(prop->getName())){
 				fishcoins += prop->getPrice();
 				prop->sold();
 			}
+			else {
+				newProperties.push_back(prop);
+			}
 		}
 	}
+	this->ownedProperties.clear();
+	this->ownedProperties = std::move(newProperties);
 	if (this->fishcoins >= ammount){
 		fishcoins -= ammount;
 		return ammount;
@@ -157,6 +163,12 @@ int Player::pay(int ammount)
 void Player::bankrupcy()
 {
 	bankrupt = true;
+	for (auto wprop : this->ownedProperties){
+		if (auto prop = wprop.lock()){
+			prop->sold();
+		}
+	}
+	this->ownedProperties.clear();
 }
 
 bool Player::inGame()
@@ -192,7 +204,10 @@ std::string Player::getName()
 {
 	return this->name;
 }
-
+void Player::addProperty(weak_ptr< PropertyField > property)
+{
+	this->ownedProperties.push_back(property);
+}
 DumbComputerPlayer::DumbComputerPlayer(const std::string cname, unsigned int fishcoins) : Player(std::move(cname), fishcoins)
 {
 }

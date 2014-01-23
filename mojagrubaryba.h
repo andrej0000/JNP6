@@ -65,6 +65,7 @@ public:
 	bool inGame();
 	std::string getName();
 	void reset();
+	void addProperty(weak_ptr< PropertyField > property);
 	virtual bool wantBuy(std::string const& propertyName) = 0;
 	virtual bool wantSell(std::string const& propertyName) = 0;
 };
