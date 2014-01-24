@@ -2,7 +2,7 @@
 #include <iostream>
 
 /* MojaGrubaRyba */
-
+//static bool debug = false;
 void MojaGrubaRyba::setDie(std::shared_ptr<Die> die)
 {
 	this->die = die;
@@ -78,6 +78,9 @@ void MojaGrubaRyba::play(unsigned int rounds)
 					std::cout << " gotowka: " << player->getFishcoins() << '\n';
 				else
 					std::cout << " *** czekanie: " << player->getWaitingTime() << " *** \n";
+			//	if(r == 70){
+			//		debug = true;
+			//	}
 			}
 		}
 	}
@@ -136,20 +139,20 @@ int Player::pay(int ammount)
 		fishcoins -= ammount;
 		return ammount;
 	}
-	std::vector< weak_ptr< PropertyField >> newProperties;
+	//std::vector< weak_ptr< PropertyField >> newProperties;
 	for (auto wprop : this->ownedProperties){
 		if (auto prop = wprop.lock()){
 			if (wantSell(prop->getName())){
 				fishcoins += prop->getPrice();
 				prop->sold();
 			}
-			else {
-				newProperties.push_back(prop);
-			}
+	//		else {
+	//			newProperties.push_back(wprop);
+	//		}
 		}
 	}
-	this->ownedProperties.clear();
-	this->ownedProperties = std::move(newProperties);
+	//this->ownedProperties.clear();
+	//this->ownedProperties = std::move(newProperties);
 	if (this->fishcoins >= ammount){
 		fishcoins -= ammount;
 		return ammount;
@@ -163,12 +166,14 @@ int Player::pay(int ammount)
 void Player::bankrupcy()
 {
 	bankrupt = true;
+	/*std::cerr << "BANKRUT " <<this->getName() << " " << this->ownedProperties.size() << '\n';
 	for (auto wprop : this->ownedProperties){
 		if (auto prop = wprop.lock()){
 			prop->sold();
+			std::cerr << "SOLD\n";
 		}
 	}
-	this->ownedProperties.clear();
+	this->ownedProperties.clear();*/
 }
 
 bool Player::inGame()
@@ -207,6 +212,7 @@ std::string Player::getName()
 void Player::addProperty(weak_ptr< PropertyField > property)
 {
 	this->ownedProperties.push_back(property);
+	std::cerr << this->ownedProperties.size() << " " << this->getName() << std::endl;
 }
 DumbComputerPlayer::DumbComputerPlayer(const std::string cname, unsigned int fishcoins) : Player(std::move(cname), fishcoins)
 {
@@ -348,10 +354,12 @@ int PropertyField::getPercent()
 
 void PropertyField::action(std::shared_ptr<Player> p)
 {
-	if (this->owner.expired()){//noninitialized
+	
+	if (this->owner.expired() || !this->owner.lock()->inGame()){
 		if(p->wantBuy(this->name)){
-			if (p->pay(this->price) == this->price)
+			if (p->pay(this->price) == this->price){
 				this->owner = p;
+			}
 		}
 	} else if (auto owner = this->owner.lock()){
 		if (owner != p) {
